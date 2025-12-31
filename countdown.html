@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 New Year Countdown</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+            font-family: 'Bebas Neue', sans-serif;
+            overflow: hidden;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            color: #f0e68c;
+            letter-spacing: 1rem;
+            margin-bottom: 3rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .countdown-container {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .flip-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .flip-cards {
+            display: flex;
+            gap: 8px;
+        }
+
+        .flip-card {
+            position: relative;
+            width: 80px;
+            height: 120px;
+            perspective: 400px;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .card {
+            position: absolute;
+            width: 100%;
+            height: 50%;
+            overflow: hidden;
+            backface-visibility: hidden;
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 200%;
+            background: linear-gradient(180deg, #2d2d2d 0%, #1a1a1a 100%);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 5rem;
+            color: #fff;
+            box-shadow:
+                inset 0 0 20px rgba(0,0,0,0.5),
+                0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .card.top {
+            top: 0;
+            border-radius: 10px 10px 0 0;
+            border-bottom: 2px solid #111;
+        }
+
+        .card.top .card-face {
+            top: 0;
+            border-radius: 10px 10px 0 0;
+            background: linear-gradient(180deg, #3d3d3d 0%, #2a2a2a 100%);
+        }
+
+        .card.bottom {
+            bottom: 0;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .card.bottom .card-face {
+            bottom: 0;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .flip-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            height: 3px;
+            background: #111;
+            z-index: 10;
+            transform: translateY(-50%);
+        }
+
+        .flip-card::after {
+            content: '';
+            position: absolute;
+            left: -5px;
+            right: -5px;
+            top: 50%;
+            height: 6px;
+            background: #333;
+            border-radius: 3px;
+            z-index: 5;
+            transform: translateY(-50%);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        /* Flip animation elements */
+        .flip-top,
+        .flip-bottom {
+            position: absolute;
+            width: 100%;
+            height: 50%;
+            overflow: hidden;
+            z-index: 3;
+        }
+
+        .flip-top {
+            top: 0;
+            transform-origin: bottom;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .flip-bottom {
+            bottom: 0;
+            transform-origin: top;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .flip-top .card-face,
+        .flip-bottom .card-face {
+            position: absolute;
+            width: 100%;
+            height: 200%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 5rem;
+            color: #fff;
+            border-radius: 10px;
+        }
+
+        .flip-top .card-face {
+            top: 0;
+            background: linear-gradient(180deg, #3d3d3d 0%, #2a2a2a 100%);
+            border-radius: 10px 10px 0 0;
+        }
+
+        .flip-bottom .card-face {
+            bottom: 0;
+            background: linear-gradient(180deg, #2d2d2d 0%, #1a1a1a 100%);
+            border-radius: 0 0 10px 10px;
+        }
+
+        @keyframes flipTop {
+            0% { transform: rotateX(0deg); }
+            100% { transform: rotateX(-90deg); }
+        }
+
+        @keyframes flipBottom {
+            0% { transform: rotateX(90deg); }
+            100% { transform: rotateX(0deg); }
+        }
+
+        .flip-top.flip {
+            animation: flipTop 0.3s ease-in forwards;
+            background: linear-gradient(180deg, #3d3d3d 0%, #2a2a2a 100%);
+        }
+
+        .flip-bottom.flip {
+            animation: flipBottom 0.3s ease-out 0.3s forwards;
+            background: linear-gradient(180deg, #2d2d2d 0%, #1a1a1a 100%);
+        }
+
+        .label {
+            color: #888;
+            font-size: 1.2rem;
+            letter-spacing: 0.3rem;
+            margin-top: 1rem;
+            text-transform: uppercase;
+        }
+
+        .separator {
+            font-size: 4rem;
+            color: #f0e68c;
+            margin-top: -2rem;
+            text-shadow: 0 0 10px rgba(240, 230, 140, 0.5);
+        }
+
+        .year-display {
+            margin-top: 3rem;
+            font-size: 6rem;
+            color: #f0e68c;
+            letter-spacing: 1.5rem;
+            text-shadow:
+                0 0 20px rgba(240, 230, 140, 0.5),
+                0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .celebration {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .celebration.active {
+            display: flex;
+        }
+
+        .countdown-wrapper.hidden {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .happy-new-year {
+            font-size: 5rem;
+            color: #f0e68c;
+            text-shadow:
+                0 0 30px rgba(240, 230, 140, 0.8),
+                0 4px 10px rgba(0,0,0,0.5);
+            margin-bottom: 2rem;
+            letter-spacing: 0.5rem;
+            animation: celebrate 0.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes celebrate {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 20px;
+            top: -20px;
+            animation: fall linear forwards;
+            pointer-events: none;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+            }
+        }
+
+        /* Decorative screws */
+        .flip-card .screw {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: radial-gradient(circle at 30% 30%, #555, #222);
+            border-radius: 50%;
+            z-index: 20;
+        }
+
+        .flip-card .screw::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 60%;
+            height: 2px;
+            background: #111;
+            transform: translate(-50%, -50%);
+        }
+
+        .flip-card .screw.tl { top: 5px; left: 5px; }
+        .flip-card .screw.tr { top: 5px; right: 5px; }
+        .flip-card .screw.bl { bottom: 5px; left: 5px; }
+        .flip-card .screw.br { bottom: 5px; right: 5px; }
+
+        @media (max-width: 768px) {
+            .title { font-size: 1.5rem; letter-spacing: 0.5rem; }
+            .flip-card { width: 50px; height: 75px; }
+            .card-face, .flip-top .card-face, .flip-bottom .card-face { font-size: 3rem; }
+            .separator { font-size: 2.5rem; }
+            .year-display { font-size: 3.5rem; letter-spacing: 0.8rem; }
+            .countdown-container { gap: 1rem; }
+            .happy-new-year { font-size: 2.5rem; }
+            .flip-card .screw { width: 5px; height: 5px; }
+            .flip-card .screw.tl { top: 3px; left: 3px; }
+            .flip-card .screw.tr { top: 3px; right: 3px; }
+            .flip-card .screw.bl { bottom: 3px; left: 3px; }
+            .flip-card .screw.br { bottom: 3px; right: 3px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="countdown-wrapper">
+        <h1 class="title">NEW YEAR COUNTDOWN</h1>
+
+        <div class="countdown-container">
+            <div class="flip-group">
+                <div class="flip-cards">
+                    <div class="flip-card" id="days-tens">
+                        <div class="screw tl"></div>
+                        <div class="screw tr"></div>
+                        <div class="screw bl"></div>
+                        <div class="screw br"></div>
+                        <div class="flip-card-inner">
+                            <div class="card top"><div class="card-face">0</div></div>
+                            <div class="card bottom"><div class="card-face">0</div></div>
+                        </div>
+                    </div>
+                    <div class="flip-card" id="days-ones">
+                        <div class="screw tl"></div>
+                        <div class="screw tr"></div>
+                        <div class="screw bl"></div>
+                        <div class="screw br"></div>
+                        <div class="flip-card-inner">
+                            <div class="card top"><div class="card-face">0</div></div>
+                            <div class="card bottom"><div class="card-face">0</div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="label">Days</div>
+            </div>
+
+            <div class="separator">:</div>
+
+            <div class="flip-group">
+                <div class="flip-cards">
+                    <div class="flip-card" id="hours-tens">
+                        <div class="screw tl"></div>
+                        <div class="screw tr"></div>
+                        <div class="screw bl"></div>
+                        <div class="screw br"></div>
+                        <div class="flip-card-inner">
+                            <div class="card top"><div class="card-face">0</div></div>
+                            <div class="card bottom"><div class="card-face">0</div></div>
+                        </div>
+                    </div>
+                    <div class="flip-card" id="hours-ones">
+                        <div class="screw tl"></div>
+                        <div class="screw tr"></div>
+                        <div class="screw bl"></div>
+                        <div class="screw br"></div>
+                        <div class="flip-card-inner">
+                            <div class="card top"><div class="card-face">0</div></div>
+                            <div class="card bottom"><div class="card-face">0</div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="label">Hours</div>
+            </div>
+
+            <div class="separator">:</div>
+
+            <div class="flip-group">
+                <div class="flip-cards">
+                    <div class="flip-card" id="minutes-tens">
+                        <div class="screw tl"></div>
+                        <div class="screw tr"></div>
+                        <div class="screw bl"></div>
+                        <div class="screw br"></div>
+                        <div class="flip-card-inner">
+                            <div class="card top"><div class="card-face">0</div></div>
+                            <div class="card bottom"><div class="card-face">0</div></div>
+                        </div>
+                    </div>
+                    <div class="flip-card" id="minutes-ones">
+                        <div class="screw tl"></div>
+                        <div class="screw tr"></div>
+                        <div class="screw bl"></div>
+                        <div class="screw br"></div>
+                        <div class="flip-card-inner">
+                            <div class="card top"><div class="card-face">0</div></div>
+                            <div class="card bottom"><div class="card-face">0</div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="label">Minutes</div>
+            </div>
+
+            <div class="separator">:</div>
+
+            <div class="flip-group">
+                <div class="flip-cards">
+                    <div class="flip-card" id="seconds-tens">
+                        <div class="screw tl"></div>
+                        <div class="screw tr"></div>
+                        <div class="screw bl"></div>
+                        <div class="screw br"></div>
+                        <div class="flip-card-inner">
+                            <div class="card top"><div class="card-face">0</div></div>
+                            <div class="card bottom"><div class="card-face">0</div></div>
+                        </div>
+                    </div>
+                    <div class="flip-card" id="seconds-ones">
+                        <div class="screw tl"></div>
+                        <div class="screw tr"></div>
+                        <div class="screw bl"></div>
+                        <div class="screw br"></div>
+                        <div class="flip-card-inner">
+                            <div class="card top"><div class="card-face">0</div></div>
+                            <div class="card bottom"><div class="card-face">0</div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="label">Seconds</div>
+            </div>
+        </div>
+
+        <div class="year-display">2026</div>
+    </div>
+
+    <div class="celebration" id="celebration">
+        <div class="happy-new-year">HAPPY NEW YEAR!</div>
+        <div class="year-display">2026</div>
+    </div>
+
+    <script>
+        const targetDate = new Date('2026-01-01T00:00:00').getTime();
+        let prevValues = {
+            'days-tens': '', 'days-ones': '',
+            'hours-tens': '', 'hours-ones': '',
+            'minutes-tens': '', 'minutes-ones': '',
+            'seconds-tens': '', 'seconds-ones': ''
+        };
+
+        function flipCard(cardId, newValue) {
+            const card = document.getElementById(cardId);
+            const topCard = card.querySelector('.card.top .card-face');
+            const bottomCard = card.querySelector('.card.bottom .card-face');
+            const oldValue = prevValues[cardId] || '0';
+
+            if (oldValue === newValue) return;
+
+            // Create flip animation elements
+            const flipTop = document.createElement('div');
+            flipTop.className = 'flip-top';
+            flipTop.innerHTML = `<div class="card-face">${oldValue}</div>`;
+
+            const flipBottom = document.createElement('div');
+            flipBottom.className = 'flip-bottom';
+            flipBottom.innerHTML = `<div class="card-face">${newValue}</div>`;
+
+            // Add flip elements (they will cover the base cards)
+            card.querySelector('.flip-card-inner').appendChild(flipTop);
+            card.querySelector('.flip-card-inner').appendChild(flipBottom);
+
+            // Trigger animation
+            requestAnimationFrame(() => {
+                flipTop.classList.add('flip');
+                flipBottom.classList.add('flip');
+            });
+
+            // Update base cards after animation and cleanup
+            setTimeout(() => {
+                topCard.textContent = newValue;
+                bottomCard.textContent = newValue;
+                flipTop.remove();
+                flipBottom.remove();
+            }, 600);
+
+            prevValues[cardId] = newValue;
+        }
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+
+            if (difference <= 0) {
+                document.querySelector('.countdown-wrapper').classList.add('hidden');
+                document.getElementById('celebration').classList.add('active');
+                createConfetti();
+                return;
+            }
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            const daysStr = String(days).padStart(2, '0');
+            const hoursStr = String(hours).padStart(2, '0');
+            const minutesStr = String(minutes).padStart(2, '0');
+            const secondsStr = String(seconds).padStart(2, '0');
+
+            flipCard('days-tens', daysStr[0]);
+            flipCard('days-ones', daysStr[1]);
+            flipCard('hours-tens', hoursStr[0]);
+            flipCard('hours-ones', hoursStr[1]);
+            flipCard('minutes-tens', minutesStr[0]);
+            flipCard('minutes-ones', minutesStr[1]);
+            flipCard('seconds-tens', secondsStr[0]);
+            flipCard('seconds-ones', secondsStr[1]);
+        }
+
+        function createConfetti() {
+            const colors = ['#f0e68c', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dfe6e9'];
+
+            setInterval(() => {
+                for (let i = 0; i < 3; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    document.body.appendChild(confetti);
+
+                    setTimeout(() => confetti.remove(), 4000);
+                }
+            }, 200);
+        }
+
+        // Initial update
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
