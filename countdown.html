@@ -156,6 +156,7 @@
             bottom: 0;
             transform-origin: top;
             border-radius: 0 0 10px 10px;
+            transform: rotateX(90deg);
         }
 
         .flip-top .card-face,
@@ -475,15 +476,17 @@
             card.querySelector('.flip-card-inner').appendChild(flipTop);
             card.querySelector('.flip-card-inner').appendChild(flipBottom);
 
+            // Update top card immediately (hidden behind flipTop)
+            topCard.textContent = newValue;
+
             // Trigger animation
             requestAnimationFrame(() => {
                 flipTop.classList.add('flip');
                 flipBottom.classList.add('flip');
             });
 
-            // Update base cards after animation and cleanup
+            // Update bottom card after flipBottom animation completes and cleanup
             setTimeout(() => {
-                topCard.textContent = newValue;
                 bottomCard.textContent = newValue;
                 flipTop.remove();
                 flipBottom.remove();
